@@ -14,12 +14,14 @@ return new class extends Migration
         Schema::create('mixpost_admin_templates', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid')->unique();
+            $table->unsignedBigInteger('tag_id');
             $table->string('name')->nullable();
-            $table->string('tag')->nullable();
             $table->json('content');
             $table->json('data')->nullable();
             $table->enum('status', ['publish', 'unpublish'])->default('publish');
             $table->timestamps();
+
+            $table->foreign('tag_id')->references('id')->on('mixpost_admin_templates_tag');
         });
     }
 
