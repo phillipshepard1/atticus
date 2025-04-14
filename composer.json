@@ -7,7 +7,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
-        "inovector/mixpost-pro-team": "^3.0",
+        "inovector/mixpost-enterprise": "^4.0",
         "laravel/framework": "^11.31",
         "laravel/horizon": "*",
         "laravel/tinker": "^2.9",
@@ -41,7 +41,7 @@
         ],
         "post-update-cmd": [
             "@php artisan vendor:publish --tag=laravel-assets --ansi --force",
-            "@php artisan mixpost:publish-assets --force=true"  
+            "@php artisan mixpost:publish-assets --force=true"
         ],
         "post-root-package-install": [
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
