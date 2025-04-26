@@ -1,0 +1,116 @@
+services:
+  app:
+    build: .
+    image: atticus
+    container_name: atticus
+    working_dir: /var/www/atticus
+    env_file:
+      - .env
+    volumes:
+      - ./:/var/www/atticus
+    restart: unless-stopped
+    environment:
+      CONTAINER_ROLE: app
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - app-net
+
+  ffmpeg:
+    image: linuxserver/ffmpeg
+    networks:
+      - app-net
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: Rootatticus132!
+      MYSQL_DATABASE: prod_atticus
+      MYSQL_USER: atticusprod
+      MYSQL_PASSWORD: Prodatticus645#
+    volumes:
+      - mysql:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-pProdatticus645#"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+    networks:
+      - app-net
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    command: redis-server --appendonly yes --replica-read-only no
+    volumes:
+      - redis:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    restart: unless-stopped
+    networks:
+      - app-net
+
+  nginx:
+    image: nginx:latest
+    container_name: atticus-nginx
+    restart: unless-stopped
+    depends_on:
+      - app
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./:/var/www/atticus
+      - ./docker-compose/nginx/atticus.conf:/etc/nginx/conf.d/default.conf
+      - /etc/letsencrypt/ssl/fullchain.pem:/etc/nginx/ssl/fullchain.pem
+      - /etc/letsencrypt/ssl/privkey.pem:/etc/nginx/ssl/privkey.pem
+    networks:
+      - app-net
+
+  scheduler:
+    image: atticus
+    container_name: laravel-scheduler
+    restart: always
+    tty: true
+    volumes:
+      - .:/var/www/atticus
+    depends_on:
+      app:
+        condition: service_started
+    environment:
+      CONTAINER_ROLE: scheduler
+    networks:
+      - app-net
+
+  queue:
+    image: atticus
+    container_name: laravel-queue
+    restart: always
+    tty: true
+    volumes:
+      - .:/var/www/atticus
+    depends_on:
+      app:
+        condition: service_started
+    environment:
+      CONTAINER_ROLE: queue
+    networks:
+      - app-net
+
+volumes:
+  mysql:
+  redis:
+
+networks:
+  app-net:
+    driver: bridge
