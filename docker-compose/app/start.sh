@@ -14,7 +14,7 @@ elif [ "$role" = "queue" ]; then
     echo "Running the queue..."
     php /var/www/atticus/artisan queue:work --queue="$work_on_queues" --sleep=3 --tries=3 -v &
 
-    php /var/www/atticus/artisan queue:work --queue=publish-post --tries=10 --verbose
+    php /var/www/atticus/artisan queue:work --queue=publish-post --tries=10 --timeout=600 --verbose
 
 elif [ "$role" = "scheduler" ]; then
 
