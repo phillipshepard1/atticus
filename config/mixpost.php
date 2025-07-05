@@ -98,6 +98,8 @@ return [
         'image/gif',
         'image/png',
         'video/mp4',
+        'video/quicktime',
+        'video/mov',
         'video/x-m4v'
     ],
 
