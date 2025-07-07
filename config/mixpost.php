@@ -84,7 +84,7 @@ return [
     'max_file_size' => [
         'image' => 1024 * 15, // 15MB
         'gif' => 1024 * 15, // 15MB
-        'video' => 1024 * 200 // 200MB
+        'video' => 1024 * 600 // 200MB
     ],
 
     /*
