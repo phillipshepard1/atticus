@@ -30,8 +30,9 @@ CMD ["/usr/local/bin/start"]
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-RUN echo "upload_max_filesize = 200M" >> /usr/local/etc/php/conf.d/uploads.ini \ 
- && echo "post_max_size = 200M" >> /usr/local/etc/php/conf.d/uploads.ini
+RUN echo "upload_max_filesize = 600M" >> /usr/local/etc/php/conf.d/uploads.ini \
+ && echo "post_max_size = 600M" >> /usr/local/etc/php/conf.d/uploads.ini \
+ && echo "memory_limit = 600M" >> /usr/local/etc/php/conf.d/uploads.ini
 
 WORKDIR /var/www/atticus
 
